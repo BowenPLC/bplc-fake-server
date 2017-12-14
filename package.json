@@ -1,0 +1,26 @@
+{
+  "name": "bplc-fake-server",
+  "version": "1.0.0",
+  "description": "Fake server for testing the BowenPLC",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint --ext .js ./ --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BowenPLC/bplc-fake-server.git"
+  },
+  "author": "Alex Bowen <ajbowen249@gmail.com>",
+  "license": "GNU GPL",
+  "bugs": {
+    "url": "https://github.com/BowenPLC/bplc-fake-server/issues"
+  },
+  "homepage": "https://github.com/BowenPLC/bplc-fake-server#readme",
+  "dependencies": {
+    "bplc-node-server": "git+https://github.com/BowenPLC/bplc-node-server.git"
+  },
+  "devDependencies": {
+    "eslint": "4.13.1"
+  }
+}
