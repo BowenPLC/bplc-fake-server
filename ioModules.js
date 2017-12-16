@@ -1,10 +1,14 @@
+const constants = require('bplc-node-server').constants;
+
 class FakeOutputModule {
-    constructor(type, defaultValue, config) {
+    constructor(moduleType, type, defaultValue, config) {
+        this.name = config.name;
+        this.moduleType = moduleType;
         this.type = type;
         this.outputs = Array(config.size).fill(defaultValue);
         this.outOfRangeError = {
             status: 417,
-            error: { message: 'Module index out of range.' }
+            error: { message: 'Module index out of range.', },
         };
     }
 
@@ -13,7 +17,7 @@ class FakeOutputModule {
             return this.outOfRangeError;
         }
 
-        return { result: this.outputs[ index ] };
+        return { result: this.outputs[ index ], };
     }
 
     set(index, state) {
@@ -21,12 +25,12 @@ class FakeOutputModule {
             return this.outOfRangeError;
         }
 
-        const type = typeof(state);
+        const type = typeof state;
         if (type !== this.type) {
             return {
                 status: 417,
-                error: {message: `Type error: need state of type ${this.type}, got ${type}.` }
-            }
+                error: { message: `Type error: need state of type ${this.type}, got ${type}.`, },
+            };
         }
 
         this.outputs[ index ] = state;
@@ -35,6 +39,6 @@ class FakeOutputModule {
 }
 
 module.exports.moduleMap = {
-    'DigitalOutput': config => new FakeOutputModule('boolean', false, config),
-    'StringOutput': config => new FakeOutputModule('string', '', config),
+    [ constants.io.modules.DigitalOutput ]: config => new FakeOutputModule(constants.io.modules.DigitalOutput, 'boolean', false, config),
+    [ constants.io.modules.StringOutput ]: config => new FakeOutputModule(constants.io.modules.StringOutput, 'string', '', config),
 };

@@ -135,4 +135,5 @@ module.exports = {
     'require-yield': 'error',
     'rest-spread-spacing': ['warn', 'never'],
     'template-curly-spacing': 'warn'
+  }
 }

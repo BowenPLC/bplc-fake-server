@@ -12,14 +12,14 @@ class FakeCore {
     }
 
     setConfig(config) {
-        reset();
+        this.reset();
 
-        config.modules.forEach( mod => {
-            if (!mod.type in ioModules.moduleMap) {
-                throw new Error(`Unsupported module type ${mod.type}`);
+        config.modules.forEach(mod => {
+            if (!(mod.moduleType in ioModules.moduleMap)) {
+                throw new Error(`Unsupported module type ${mod.moduleType}`);
             }
 
-            this.ioMap.push(ioModules[mod.type](mod));
+            this.ioMap.push(ioModules.moduleMap[ mod.moduleType ](mod));
         });
 
         this.valid = true;
@@ -27,14 +27,11 @@ class FakeCore {
     }
 
     async setIO(mod, index, state) {
-        if (mod >= this.ioMap.length) {
-            return {
-                status: 417,
-                error: { message: `No such module ${mod}`, },
-            }
+        if (typeof mod === 'number') {
+            return await this.setIOByIndex(mod, index, state);
         }
 
-        return this.ioMap[mod].set(index, state);
+        return await this.setIOByName(mod, index, state);
     }
 
     getStatus() {
@@ -42,9 +39,37 @@ class FakeCore {
     }
 
     dump() {
-        ioMap.forEach( mod => {
-            
+        return this.ioMap.map(mod => {
+            return {
+                type: mod.moduleType,
+                name: mod.name,
+                data: mod.outputs,
+            };
         });
+    }
+
+    async setIOByIndex(mod, index, state) {
+        if (mod >= this.ioMap.length) {
+            return {
+                status: 417,
+                error: { message: `No such module ${mod}`, },
+            };
+        }
+
+        return this.ioMap[ mod ].set(index, state);
+    }
+
+    async setIOByName(mod, index, state) {
+        const foundMod = this.ioMap.filter(x => x.name === mod);
+
+        if (foundMod.length !== 1) {
+            return {
+                status: 417,
+                error: { message: `No such module ${mod}`, },
+            };
+        }
+
+        return foundMod[ 0 ].set(index, state);
     }
 }
 
